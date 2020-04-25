@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('auth')->group(function() {
+    Route::post('login', 'API\AuthController@login');
+    Route::post('register', 'API\AuthController@register');
+    Route::post('resetPassword', 'API\AuthController@resetPassword')->name('password.reset');
 });
+
