@@ -8,6 +8,19 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
+/**
+ * Class User
+ * @package App\Models
+ * @property int $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $password
+ * @property integer $pesel
+ * @property string $gender
+ * @property integer $lang
+ */
+
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;

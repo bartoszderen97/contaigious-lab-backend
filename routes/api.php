@@ -19,3 +19,10 @@ Route::prefix('auth')->group(function() {
     Route::post('resetPassword', 'API\AuthController@resetPassword')->name('password.reset');
 });
 
+Route::prefix('examination')->group(function() {
+    Route::get('get', 'API\ExaminationsController@getExamination');
+    Route::get('getByName/{name}', 'API\ExaminationsController@getExaminationByName');
+    Route::post('add', 'API\ExaminationsController@addExamination');
+    Route::put('edit', 'API\ExaminationsController@editExamination');
+    Route::delete('get', 'API\ExaminationsController@deleteExamination');
+});
