@@ -22,6 +22,7 @@ Route::middleware('cors')->group(function () {
 
     Route::prefix('examination')->group(function () {
         Route::get('get', 'API\ExaminationsController@getExamination');
+        Route::get('getAll', 'API\ExaminationsController@getAllExamination');
         Route::get('getByName/{name}', 'API\ExaminationsController@getExaminationByName');
         Route::post('add', 'API\ExaminationsController@addExamination');
         Route::put('edit', 'API\ExaminationsController@editExamination');

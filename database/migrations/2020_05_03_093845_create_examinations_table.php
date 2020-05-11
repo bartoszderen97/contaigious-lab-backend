@@ -15,7 +15,7 @@ class CreateExaminationsTable extends Migration
     {
         Schema::create('examinations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 15);
+            $table->string('name', 55);
             $table->decimal('pricePLN', 6,2);
             $table->text('details');
             $table->timestamps();

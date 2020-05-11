@@ -43,7 +43,7 @@ class ExaminationsController extends Controller
 
     public function getExaminationByName($name)
     {
-        $examinations = Examination::where('name', 'like', $name);
+        $examinations = Examination::where('name', 'like', '%'. $name .'%')->get();
         if(empty($examinations)) {
             $data = [
                 'status' => Response::HTTP_NOT_FOUND,
@@ -51,13 +51,44 @@ class ExaminationsController extends Controller
             ];
         }
         else {
+
+            $examinations = $examinations->toArray();
+            for($i=0;$i<count($examinations);$i++) {
+                $examDetails = explode(';', $examinations[$i]['details']);
+                $examinations[$i]['details'] = $examDetails;
+            }
             $data = [
                 'status' => Response::HTTP_OK,
-                'data' => $examinations->toArray()
+                'data' => $examinations
             ];
         }
         return response()->json($data, $data['status']);
     }
+
+    public function getAllExamination()
+    {
+        $examinations = Examination::all();
+        if(empty($examinations)) {
+            $data = [
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => __('Examination not found')
+            ];
+        }
+        else {
+            $examinations = $examinations->toArray();
+            for($i=0;$i<count($examinations);$i++) {
+                $examDetails = explode(';', $examinations[$i]['details']);
+                $examinations[$i]['details'] = $examDetails;
+            }
+
+            $data = [
+                'status' => Response::HTTP_OK,
+                'data' => $examinations
+            ];
+        }
+        return response()->json($data, $data['status']);
+    }
+
 
     public function addExamination(Request $request)
     {
