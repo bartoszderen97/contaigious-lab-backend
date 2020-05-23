@@ -96,8 +96,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $data = APIRequestHelper::validate($request->all(), [
-            'email' => ['string', 'email'],
-            'lang' => ['required', 'string']
+            'email' => ['required', 'email']
         ]);
 
         if(!isset($data['errors'])) {
@@ -114,7 +113,7 @@ class AuthController extends Controller
             else {
                 $data = [
                     'status' => Response::HTTP_CONFLICT,
-                    'error' => [
+                    'errors' => [
                         'email' => __($response)
                     ]
                 ];

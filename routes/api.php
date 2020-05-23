@@ -20,6 +20,13 @@ Route::middleware('cors')->group(function () {
         Route::post('resetPassword', 'API\AuthController@resetPassword')->name('password.reset');
     });
 
+    Route::prefix('user')->group(function () {
+        Route::get('getAll', 'API\UserController@getAllUsers');
+        Route::get('getSingle/{id_user}', 'API\UserController@getSingleUser');
+        Route::delete('delete/{id_user}', 'API\UserController@deleteUser');
+        Route::put('update', 'API\UserController@updateUser');
+    });
+
     Route::prefix('examination')->group(function () {
         Route::get('get', 'API\ExaminationsController@getExamination');
         Route::get('getAll', 'API\ExaminationsController@getAllExamination');
