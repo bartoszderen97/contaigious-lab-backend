@@ -38,7 +38,7 @@ Route::middleware('cors')->group(function () {
 
     Route::prefix('application')->group(function () {
         Route::get('getAll', 'API\ApplicationController@getAllApplications');
-        Route::get('getAllUser/{id_user}', 'API\ApplicationController@getAllApplicationsOfUser');
+        Route::get('getAllUser', 'API\ApplicationController@getAllApplicationsOfUser');
         Route::get('getSingle/{id_application}', 'API\ApplicationController@getSingleApplication');
         Route::delete('delete/{id_application}', 'API\ApplicationController@deleteApplication');
         Route::put('update', 'API\ApplicationController@updateApplication');

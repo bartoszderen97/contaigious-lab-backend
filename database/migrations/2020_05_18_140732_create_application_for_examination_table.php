@@ -13,7 +13,7 @@ class CreateApplicationForExaminationTable extends Migration
      */
     public function up()
     {
-        Schema::create('application_for_examination', function (Blueprint $table) {
+        Schema::create('application_for_examinations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('patient_id')->unsigned();
             $table->bigInteger('examination_id')->unsigned();

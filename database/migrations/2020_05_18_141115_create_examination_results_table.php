@@ -28,7 +28,7 @@ class CreateExaminationResultsTable extends Migration
                 ->references('id')->on('users')
                 ->onDelete('CASCADE');
             $table->foreign('application_id')
-                ->references('id')->on('application_for_examination')
+                ->references('id')->on('application_for_examinations')
                 ->onDelete('CASCADE');
         });
     }

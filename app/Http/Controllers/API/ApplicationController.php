@@ -8,6 +8,7 @@ use App\Models\ApplicationForExamination;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
@@ -46,13 +47,9 @@ class ApplicationController extends Controller
         return response()->json($data, $data['status']);
     }
 
-    public function getAllApplicationsOfUser($id_user)
+    public function getAllApplicationsOfUser()
     {
-        $data = APIRequestHelper::validate(['id_user' => $id_user],
-            ['id_user' => ['required','integer']]);
-        if(isset($data['errors'])) {
-            return response()->json($data, $data['status']);
-        }
+        $id_user = Auth::id();
         $applications = ApplicationForExamination::where('id_user', '=', $id_user)->get()->toArray();
         if(empty($applications)) {
             $data = [
