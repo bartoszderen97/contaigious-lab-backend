@@ -24,6 +24,7 @@ class ApplicationController extends Controller
             $applier = User::find($item['applied_by_id'])->toArray();
             $data[] = [
                 'id' => $item['id'],
+                'created_at' => $item['created_at'],
                 'patient' => $patient,
                 'examination' => $examination,
                 'applier' => $applier
