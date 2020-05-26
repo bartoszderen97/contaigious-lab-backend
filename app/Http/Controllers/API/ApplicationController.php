@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\APIRequestHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicationForExamination;
+use App\Models\Examination;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,9 +17,21 @@ class ApplicationController extends Controller
     public function getAllApplications()
     {
         $applications = ApplicationForExamination::get()->toArray();
+        $data=[];
+        foreach ($applications as $item){
+            $patient = User::find($item['patient_id'])->toArray();
+            $examination = Examination::find($item['examination_id'])->toArray();
+            $applier = User::find($item['applied_by_id'])->toArray();
+            $data[] = [
+                'id' => $item['id'],
+                'patient' => $patient,
+                'examination' => $examination,
+                'applier' => $applier
+            ];
+        }
         $response = [
             'status' => Response::HTTP_OK,
-            'data' => $applications
+            'data' => $data
         ];
         return response()->json($response, $response['status']);
     }

@@ -20,6 +20,15 @@ Route::middleware('cors')->group(function () {
         Route::post('resetPassword', 'API\AuthController@resetPassword')->name('password.reset');
     });
 
+
+    Route::get('/token-expired', function() {
+        return response()->json([
+            'status' => \Illuminate\Http\Response::HTTP_UNAUTHORIZED,
+            'message' => __('Token expired. Please login')
+        ]);
+    })->name('login');
+
+
     Route::prefix('user')->group(function () {
         Route::get('getAll', 'API\UserController@getAllUsers');
         Route::get('getSingle/{id_user}', 'API\UserController@getSingleUser');
