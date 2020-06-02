@@ -29,7 +29,7 @@ Route::middleware('cors')->group(function () {
     })->name('login');
 
 
-    Route::middleware('auth')->prefix('user')->group(function () {
+    Route::middleware('auth:api')->prefix('user')->group(function () {
         Route::get('getAll', 'API\UserController@getAllUsers');
         Route::get('getSingle/{id_user}', 'API\UserController@getSingleUser');
         Route::delete('delete/{id_user}', 'API\UserController@deleteUser');
