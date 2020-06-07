@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\APIRequestHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Examination;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,6 +30,40 @@ class UserController extends Controller
             ];
         }
         return response()->json($response, $response['status']);
+    }
+
+    public function getUserByName($name)
+    {
+        $data = APIRequestHelper::validate(['name' => $name],
+            ['name' => ['nullable', 'string', 'max:255']]);
+        if(isset($data['errors'])) {
+            return response()->json($data, $data['status']);
+        }
+
+        $userRole = Auth::user()->role;
+        if($userRole != "admin") {
+            $response = [
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'You don\'t have permission to this page'
+            ];
+        }
+        else {
+            $users = User::where('last_name', 'like', '%' . $name . '%')->get();
+            if (empty($users)) {
+                $data = [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => __('Examination not found')
+                ];
+            } else {
+
+                $users = $users->toArray();
+                $data = [
+                    'status' => Response::HTTP_OK,
+                    'data' => $users
+                ];
+            }
+        }
+        return response()->json($data, $data['status']);
     }
 
     public function getSingleUser($id_user)
@@ -75,7 +110,7 @@ class UserController extends Controller
         }
 
         $userRole = Auth::user()->role;
-        if($userRole != "admin" || Auth::id() != $data['id_user']) {
+        if($userRole != "admin") {
             $data = [
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'You don\'t have permission to this page'

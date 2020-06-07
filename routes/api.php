@@ -31,6 +31,7 @@ Route::middleware('cors')->group(function () {
 
     Route::middleware('auth:api')->prefix('user')->group(function () {
         Route::get('getAll', 'API\UserController@getAllUsers');
+        Route::get('getByName/{name}', 'API\UserController@getUserByName');
         Route::get('getSingle/{id_user}', 'API\UserController@getSingleUser');
         Route::delete('delete/{id_user}', 'API\UserController@deleteUser');
         Route::put('update', 'API\UserController@updateUser');

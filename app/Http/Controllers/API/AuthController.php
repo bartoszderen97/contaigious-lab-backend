@@ -77,7 +77,8 @@ class AuthController extends Controller
                 $data = [
                     'status' => Response::HTTP_OK,
                     'token' => $user->createToken('contaigious-lab')->accessToken,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'user_role' => $user->role
                 ];
             }
             else {
