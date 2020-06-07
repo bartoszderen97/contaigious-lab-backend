@@ -24,7 +24,7 @@ class ApplicationController extends Controller
             ];
         }
         else {
-            $applications = ApplicationForExamination::get()->toArray();
+            $applications = ApplicationForExamination::orderBy('created_at','desc')->orderBy('id')->get()->toArray();
             $data=[];
             foreach ($applications as $item){
                 $patient = User::find($item['patient_id'])->toArray();
