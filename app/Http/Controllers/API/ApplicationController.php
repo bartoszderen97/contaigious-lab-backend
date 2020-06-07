@@ -16,24 +16,33 @@ class ApplicationController extends Controller
 {
     public function getAllApplications()
     {
-        $applications = ApplicationForExamination::get()->toArray();
-        $data=[];
-        foreach ($applications as $item){
-            $patient = User::find($item['patient_id'])->toArray();
-            $examination = Examination::find($item['examination_id'])->toArray();
-            $applier = User::find($item['applied_by_id'])->toArray();
-            $data[] = [
-                'id' => $item['id'],
-                'created_at' => $item['created_at'],
-                'patient' => $patient,
-                'examination' => $examination,
-                'applier' => $applier
+        $userRole = Auth::user()->role;
+        if($userRole == "client") {
+            $response = [
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'You don\'t have permission to this page'
             ];
         }
-        $response = [
-            'status' => Response::HTTP_OK,
-            'data' => $data
-        ];
+        else {
+            $applications = ApplicationForExamination::get()->toArray();
+            $data=[];
+            foreach ($applications as $item){
+                $patient = User::find($item['patient_id'])->toArray();
+                $examination = Examination::find($item['examination_id'])->toArray();
+                $applier = User::find($item['applied_by_id'])->toArray();
+                $data[] = [
+                    'id' => $item['id'],
+                    'created_at' => $item['created_at'],
+                    'patient' => $patient,
+                    'examination' => $examination,
+                    'applier' => $applier
+                ];
+            }
+            $response = [
+                'status' => Response::HTTP_OK,
+                'data' => $data
+            ];
+        }
         return response()->json($response, $response['status']);
     }
 
@@ -44,6 +53,7 @@ class ApplicationController extends Controller
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
         }
+
         $application = ApplicationForExamination::find($id_application);
         if(empty($application)) {
             $data = [
@@ -52,11 +62,38 @@ class ApplicationController extends Controller
             ];
         }
         else {
-            $application = $application->toArray();
-            $data = [
-                'status' => Response::HTTP_OK,
-                'data' => $application
-            ];
+            $userRole = Auth::user()->role;
+            if($userRole == "client" && Auth::id() != $application->patient_id) {
+                $data = [
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'You don\'t have permission to this page'
+                ];
+            }
+            else {
+                $application = $application->toArray();
+                if (empty($application)) {
+                    $data = [
+                        'status' => Response::HTTP_NOT_FOUND,
+                        'message' => 'Application not found'
+                    ];
+                }
+                else {
+                    $patient = User::find($application['patient_id'])->toArray();
+                    $examination = Examination::find($application['examination_id'])->toArray();
+                    $applier = User::find($application['applied_by_id'])->toArray();
+                    $responseData[] = [
+                        'id' => $application['id'],
+                        'created_at' => $application['created_at'],
+                        'patient' => $patient,
+                        'examination' => $examination,
+                        'applier' => $applier
+                    ];
+                    $data = [
+                        'status' => Response::HTTP_OK,
+                        'data' => $responseData
+                    ];
+                }
+            }
         }
         return response()->json($data, $data['status']);
     }
@@ -85,19 +122,27 @@ class ApplicationController extends Controller
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
         }
-        $id_application = ApplicationForExamination::find($id_application);
-        if(empty($id_application)) {
+        $userRole = Auth::user()->role;
+        if($userRole == "client" && Auth::id() != $data['patient_id']) {
             $data = [
-                'status' => Response::HTTP_NOT_FOUND,
-                'message' => __('Application not found')
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'You don\'t have permission to this page'
             ];
         }
         else {
-            $id_application->delete();
-            $data = [
-                'status' => Response::HTTP_OK,
-                'message' => __('Application has been deleted')
-            ];
+            $id_application = ApplicationForExamination::find($id_application);
+            if (empty($id_application)) {
+                $data = [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => __('Application not found')
+                ];
+            } else {
+                $id_application->delete();
+                $data = [
+                    'status' => Response::HTTP_OK,
+                    'message' => __('Application has been deleted')
+                ];
+            }
         }
         return response()->json($data, $data['status']);
     }
@@ -112,23 +157,31 @@ class ApplicationController extends Controller
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
         }
-        $application = ApplicationForExamination::find($data['id_application']);
-        if(empty($application)) {
+        $userRole = Auth::user()->role;
+        if($userRole == "client" && Auth::id() != $data['patient_id']) {
             $data = [
-                'status' => Response::HTTP_NOT_FOUND,
-                'message' => __('Application not found')
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'You don\'t have permission to this page'
             ];
         }
         else {
-            $application->patient_id = $data['patient_id'];
-            $application->examination_id = $data['examination_id'];
-            $application->applied_by_id = $data['applied_by_id'];
-            $application->save();
+            $application = ApplicationForExamination::find($data['id_application']);
+            if (empty($application)) {
+                $data = [
+                    'status' => Response::HTTP_NOT_FOUND,
+                    'message' => __('Application not found')
+                ];
+            } else {
+                $application->patient_id = $data['patient_id'];
+                $application->examination_id = $data['examination_id'];
+                $application->applied_by_id = $data['applied_by_id'];
+                $application->save();
 
-            $data = [
-                'status' => Response::HTTP_OK,
-                'message' => __('Application has been updated')
-            ];
+                $data = [
+                    'status' => Response::HTTP_OK,
+                    'message' => __('Application has been updated')
+                ];
+            }
         }
         return response()->json($data, $data['status']);
     }
@@ -142,6 +195,13 @@ class ApplicationController extends Controller
         ]);
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
+        }
+        $userRole = Auth::user()->role;
+        if($userRole == "client" && Auth::id() != $data['patient_id']) {
+            $data = [
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'You don\'t have permission to this page'
+            ];
         }
         else {
             $application = new ApplicationForExamination();
