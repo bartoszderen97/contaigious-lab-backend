@@ -40,12 +40,12 @@ Route::middleware('cors')->group(function () {
         Route::get('get', 'API\ExaminationsController@getExamination');
         Route::get('getAll', 'API\ExaminationsController@getAllExamination');
         Route::get('getByName/{name}', 'API\ExaminationsController@getExaminationByName');
-        Route::post('add', 'API\ExaminationsController@addExamination');
-        Route::put('edit', 'API\ExaminationsController@editExamination');
-        Route::delete('get', 'API\ExaminationsController@deleteExamination');
+        Route::middleware('auth:api')->post('add', 'API\ExaminationsController@addExamination');
+        Route::middleware('auth:api')->put('edit', 'API\ExaminationsController@editExamination');
+        Route::middleware('auth:api')->delete('delete', 'API\ExaminationsController@deleteExamination');
     });
 
-    Route::prefix('application')->group(function () {
+    Route::middleware('auth:api')->prefix('application')->group(function () {
         Route::get('getAll', 'API\ApplicationController@getAllApplications');
         Route::get('getAllUser', 'API\ApplicationController@getAllApplicationsOfUser');
         Route::get('getSingle/{id_application}', 'API\ApplicationController@getSingleApplication');

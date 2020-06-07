@@ -4,6 +4,7 @@
 use App\Models\User;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+use Faker\Provider\pl_PL\Person as Person;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +18,34 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $gender = $faker->randomElement(["M", "F", "O"]);
+    switch ($gender) {
+        case "M":
+            $firstName = $faker->firstNameMale;
+            $lastName = $faker->lastNameMale;
+            $pesel = (string)$faker->unique()->pesel(null, $gender);
+            break;
+        case "F":
+            $firstName = $faker->firstNameFemale;
+            $lastName = $faker->lastNameFemale;
+            $pesel = (string)$faker->unique()->pesel(null, $gender);
+            break;
+        case "O":
+            $firstName = $faker->firstName;
+            $lastName = $faker->lastName;
+            $pesel = (string)$faker->unique()->pesel;
+            break;
+    }
+    if(strlen($pesel)==10)
+        $pesel='0'.$pesel;
     return [
-        'first_name' => $faker->firstName,
-        'last_name' => $faker->lastName,
-        'email' => $faker->unique()->safeEmail,
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'email' => $faker->unique()->email,
         'email_verified_at' => now(),
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'pesel' => $faker->unique()->randomNumber(8),
-        'gender' => $faker->randomElement(['M', "F", "O"]),
+        'pesel' => $pesel,
+        'gender' => $gender,
         'role' => $faker->randomElement(['client', "worker", "admin"]),
         'lang' => $faker->randomElement(['pl', 'en']),
         'remember_token' => Str::random(10),
