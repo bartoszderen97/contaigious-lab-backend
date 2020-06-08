@@ -75,7 +75,7 @@ class UserController extends Controller
         }
 
         $userRole = Auth::user()->role;
-        if($userRole == "admin" || Auth::id() != $data['id_user']) {
+        if($userRole != "admin" && Auth::id() != $data['id_user']) {
             $data = [
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'You don\'t have permission to this page'
@@ -141,8 +141,8 @@ class UserController extends Controller
             'id_user' => ['required','integer'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'pesel' => ['required', 'integer'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'pesel' => ['required', 'string','size:11'],
             'gender' => ['required', 'string', Rule::in(['M', 'F', 'O'])],
             'lang' => ['required', 'string']
         ]);
