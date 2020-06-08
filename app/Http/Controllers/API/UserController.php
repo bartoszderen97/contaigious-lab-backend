@@ -150,7 +150,7 @@ class UserController extends Controller
             return response()->json($data, $data['status']);
         }
         $userRole = Auth::user()->role;
-        if($userRole != "admin" || Auth::id() != $data['id_user']) {
+        if($userRole != "admin" && Auth::id() != $data['id_user']) {
             $data = [
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'You don\'t have permission to this page'
