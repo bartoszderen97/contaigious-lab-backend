@@ -101,17 +101,34 @@ class ApplicationController extends Controller
     public function getAllApplicationsOfUser()
     {
         $id_user = Auth::id();
-        $applications = ApplicationForExamination::where('id_user', '=', $id_user)->get()->toArray();
+        $applications = ApplicationForExamination::where('patient_id', '=', $id_user)
+            ->orderBy('created_at','desc')->orderBy('id')->get()->toArray();
         if(empty($applications)) {
-            $data = [
+            $response = [
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => __('Applications not found')
             ];
         }
-        $response = [
-            'status' => Response::HTTP_OK,
-            'data' => $applications
-        ];
+        else {
+            $data=[];
+            foreach ($applications as $item){
+                $patient = User::find($item['patient_id'])->toArray();
+                $examination = Examination::find($item['examination_id'])->toArray();
+                $applier = User::find($item['applied_by_id'])->toArray();
+                $data[] = [
+                    'id' => $item['id'],
+                    'created_at' => $item['created_at'],
+                    'patient' => $patient,
+                    'examination' => $examination,
+                    'applier' => $applier
+                ];
+            }
+            $response = [
+                'status' => Response::HTTP_OK,
+                'data' => $data
+            ];
+        }
+
         return response()->json($response, $response['status']);
     }
 

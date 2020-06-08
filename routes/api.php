@@ -55,4 +55,13 @@ Route::middleware('cors')->group(function () {
         Route::post('create', 'API\ApplicationController@createApplication');
     });
 
+    Route::middleware('auth:api')->prefix('result')->group(function () {
+        Route::get('getAll', 'API\ResultsController@getAllResults');
+        Route::get('getAllUser', 'API\ResultsController@getAllResultsOfUser');
+        Route::get('getSingle/{id_application}', 'API\ResultsController@getSingleResult');
+        Route::delete('delete/{id_result}', 'API\ResultsController@deleteResult');
+        Route::put('update', 'API\ResultsController@updateResult');
+        Route::post('create', 'API\ResultsController@createResult');
+    });
+
 });
