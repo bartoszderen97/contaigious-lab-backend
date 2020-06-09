@@ -139,14 +139,14 @@ class ResultsController extends Controller
 
     public function updateResult(Request $request) {
         $data = APIRequestHelper::validate($request->all(), [
-            'id_result' => ['required', 'integer', 'exists:examination_results'],
+            'id_result' => ['required', 'integer', 'exists:examination_results,id'],
             'illness_presence' => ['required', Rule::in([0,1])],
             'unit_name' => ['nullable', Rule::in(['g/mol', 'mm/Hg', '%'])],
-            'result_value' => ['nullable', 'double'],
-            'result_lowest_norm' => ['nullable', 'double'],
-            'result_highest_norm' => ['nullable', 'double'],
-            'added_by' => ['required', 'integer', 'exists:users'],
-            'application_id' => ['required', 'integer', 'exists:application_for_examinations'],
+            'result_value' => ['nullable', 'numeric'],
+            'result_lowest_norm' => ['nullable', 'numeric'],
+            'result_highest_norm' => ['nullable', 'numeric'],
+            'added_by' => ['required', 'integer', 'exists:users,id'],
+            'application_id' => ['required', 'integer', 'exists:application_for_examinations,id'],
         ]);
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
@@ -181,11 +181,11 @@ class ResultsController extends Controller
         $data = APIRequestHelper::validate($request->all(), [
             'illness_presence' => ['required', Rule::in([0,1])],
             'unit_name' => ['nullable', Rule::in(['g/mol', 'mm/Hg', '%'])],
-            'result_value' => ['nullable', 'double'],
-            'result_lowest_norm' => ['nullable', 'double'],
-            'result_highest_norm' => ['nullable', 'double'],
-            'added_by' => ['required', 'integer', 'exists:users'],
-            'application_id' => ['required', 'integer', 'exists:application_for_examinations'],
+            'result_value' => ['nullable', 'numeric'],
+            'result_lowest_norm' => ['nullable', 'numeric'],
+            'result_highest_norm' => ['nullable', 'numeric'],
+            'added_by' => ['required', 'integer', 'exists:users,id'],
+            'application_id' => ['required', 'integer', 'exists:application_for_examinations,id'],
         ]);
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
