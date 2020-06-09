@@ -206,9 +206,9 @@ class ApplicationController extends Controller
     public function createApplication(Request $request)
     {
         $data = APIRequestHelper::validate($request->all(), [
-            'patient_id' => ['required', 'integer'],
-            'examination_id' => ['required', 'integer'],
-            'applied_by_id' => ['required', 'integer']
+            'patient_id' => ['required', 'integer', 'exists:users,id'],
+            'examination_id' => ['required', 'integer','exists:examinations,id'],
+            'applied_by_id' => ['required', 'integer','exists:users,id']
         ]);
         if(isset($data['errors'])) {
             return response()->json($data, $data['status']);
